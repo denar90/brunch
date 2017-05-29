@@ -5,7 +5,7 @@ const fs = pify(require('fs'));
 const utils = require('../lib/utils');
 
 describe('utils index', () => {
-  context('parentDirs', () => {
+  describe('parentDirs', () => {
     it('should return array of dirs', () => {
       utils.parentDirs('deep/dir/tree/index.js').should.eql(['deep/', 'deep/dir/', 'deep/dir/tree/']);
       utils.parentDirs('deep/dir/tree/').should.eql(['deep/', 'deep/dir/', 'deep/dir/tree/']);
@@ -16,34 +16,32 @@ describe('utils index', () => {
     });
   });
 
-  context('writeFile', () => {
-    const filePath = './tmp/index.js';
+  describe('writeFile', () => {
+    const filePath = './test/tmp/index.js';
     const fileData = JSON.stringify({foo: 'bar'});
 
     beforeEach(() => {
-      utils.writeFile(filePath, fileData);
+      return utils.writeFile(filePath, fileData);
     });
 
     afterEach(() => {
-      fs.unlink(filePath);
+      return fs.unlink(filePath);
     });
 
     it('should write file', () => {
-      fs.access(filePath).then(error => {
-        (typeof error === 'undefined').should.eql(true);
-      }).catch(e => {});
+      fs.existsSync(filePath).should.be.true;
     });
 
     it('should write file with content', () => {
-      fs.readFile(filePath, 'utf8').then(data => {
-        data.should.deep.eql(fileData);
-      }).catch(e => {});;
+      return fs.readFile(filePath, 'utf8').then(data => {
+        data.should.eql(fileData);
+      });
     });
 
     //todo check if file was written with right permissions
   });
 
-  context('readonly', () => {
+  describe('readonly', () => {
     let target = {
       'path': 'path/to/file.js'
     };
@@ -56,95 +54,74 @@ describe('utils index', () => {
     });
 
     it('should set enumerable to true', () => {
-      (descriptor.enumerable).should.eql(true);
+      descriptor.enumerable.should.eql(true);
     });
 
     it('should set configurable to true', () => {
-      (descriptor.configurable).should.eql(true);
+      descriptor.configurable.should.eql(true);
     });
   });
 
-  context('readonly', () => {
-    const target = {
-      'path': 'path/to/file.js'
-    };
-    const props = {'path': 'path/to/file.js'};
-    let descriptor;
-
-    beforeEach(() => {
-      utils.readonly(target, props);
-      descriptor = Object.getOwnPropertyDescriptor(target, 'path');
-    });
-
-    it('should set enumerable to true', () => {
-      (descriptor.enumerable).should.eql(true);
-    });
-
-    it('should set configurable to true', () => {
-      (descriptor.configurable).should.eql(true);
-    });
-  });
-
-  context('flat', () => {
+  describe('flat', () => {
     it('should flat array', () => {
       const iter = ['foo', 'bar', 'baz'];
-      (utils.flat(iter)).should.eql(['foo', 'bar', 'baz']);
+      utils.flat(iter).should.eql(['foo', 'bar', 'baz']);
     });
   });
 
-  context('uniq', () => {
+  describe('uniq', () => {
     it('should have unique values', () => {
       const iter = ['foo', 'foo', 'bar', 'baz', 'baz', 'baz'];
-      (utils.uniq(iter)).should.eql(['foo', 'bar', 'baz']);
+      utils.uniq(iter).should.eql(['foo', 'bar', 'baz']);
     });
   });
 
-  context('toArr', () => {
+  describe('toArr', () => {
     it('should return array', () => {
       const iter = ['foo', 'bar', 'baz'];
-      (utils.toArr(iter)).should.eql(['foo', 'bar', 'baz']);
+      utils.toArr(iter).should.eql(['foo', 'bar', 'baz']);
     });
 
     it('should return empty array', () => {
       const iter = null;
-      (utils.toArr(iter)).should.eql([]);
+      utils.toArr(iter).should.eql([]);
     });
   });
 
-  context('removeFrom', () => {
+  describe('removeFrom', () => {
     it('should return same array', () => {
       const iter = ['foo', 'bar', 'baz'];
-      (utils.removeFrom(iter)).should.eql(['foo', 'bar', 'baz']);
+      utils.removeFrom(iter).should.eql(['foo', 'bar', 'baz']);
     });
 
     it('should return cleaned array', () => {
       const iter = ['foo', 'bar', 'baz'];
-      (utils.removeFrom(iter, ['baz', 'bar'])).should.eql(['foo']);
+      utils.removeFrom(iter, ['baz', 'bar']).should.eql(['foo']);
     });
   });
 
-  context('pifyHook', () => {
+  describe('pifyHook', () => {
     it('should promisify preCompile ', () => {
       const obj = {
         preCompile: test => test
       };
       utils.pifyHook(obj);
-      (obj.preCompile() instanceof Promise).should.eql(true);
+      obj.preCompile().should.be.an.instanceOf(Promise);
     });
 
     it('should not promisify empty', () => {
       const obj = {
-        preCompile: Function.prototype
+        preCompile: () => 'test'
       };
       utils.pifyHook(obj);
-      (obj.preCompile() instanceof Promise).should.eql(false);
+      obj.preCompile().should.not.be.an.instanceOf(Promise);
     });
   });
 
-  context('jsonToData', () => {
+  describe('jsonToData', () => {
     it('should decode data', () => {
       const json = {foo: 'bar'};
-      (utils.jsonToData(json)).should.eql('data:application/json;charset=utf-8;base64,eyJmb28iOiJiYXIifQ==');
+      utils.jsonToData(json).should.eql('data:application/json;charset=utf-8;base64,eyJmb28iOiJiYXIifQ==');
     });
   });
 
