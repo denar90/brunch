@@ -64,7 +64,6 @@
     "chai-as-promised": "^6.0",
     "eslint": "^3.0",
     "eslint-config-brunch": "^1.0",
-    "fs-access": "^1.0.1",
     "mocha": "^3.3"
   },
   "optionalDependencies": {
