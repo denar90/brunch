@@ -2,17 +2,27 @@
 
 const pify = require('pify');
 const fs = pify(require('fs'));
-const utils = require('../lib/utils');
+const {
+  parentDirs,
+  writeFile,
+  readonly,
+  flat,
+  uniq,
+  toArr,
+  removeFrom,
+  pifyHook,
+  jsonToData
+} = require('../lib/utils');
 
 describe('utils index', () => {
   describe('parentDirs', () => {
     it('should return array of dirs', () => {
-      utils.parentDirs('deep/dir/tree/index.js').should.eql(['deep/', 'deep/dir/', 'deep/dir/tree/']);
-      utils.parentDirs('deep/dir/tree/').should.eql(['deep/', 'deep/dir/', 'deep/dir/tree/']);
+      parentDirs('deep/dir/tree/index.js').should.eql(['deep/', 'deep/dir/', 'deep/dir/tree/']);
+      parentDirs('deep/dir/tree/').should.eql(['deep/', 'deep/dir/', 'deep/dir/tree/']);
     });
 
     it('should return array of dirs with root', () => {
-      utils.parentDirs('./deep/dir/tree/index.js').should.eql(['./', './deep/', './deep/dir/', './deep/dir/tree/']);
+      parentDirs('./deep/dir/tree/index.js').should.eql(['./', './deep/', './deep/dir/', './deep/dir/tree/']);
     });
   });
 
@@ -21,7 +31,7 @@ describe('utils index', () => {
     const fileData = JSON.stringify({foo: 'bar'});
 
     beforeEach(() => {
-      return utils.writeFile(filePath, fileData);
+      return writeFile(filePath, fileData);
     });
 
     afterEach(() => {
@@ -47,7 +57,7 @@ describe('utils index', () => {
         'path': 'path/to/file.js'
       };
       const props = {'path': 'path/to/file.js'};
-      utils.readonly(target, props);
+      readonly(target, props);
       const descriptor = Object.getOwnPropertyDescriptor(target, 'path');
 
       descriptor.enumerable.should.eql(true);
@@ -58,38 +68,38 @@ describe('utils index', () => {
   describe('flat', () => {
     it('should flat array', () => {
       const iter = ['foo', 'bar', 'baz'];
-      utils.flat(iter).should.eql(['foo', 'bar', 'baz']);
+      flat(iter).should.eql(['foo', 'bar', 'baz']);
     });
   });
 
   describe('uniq', () => {
     it('should have unique values', () => {
       const iter = ['foo', 'foo', 'bar', 'baz', 'baz', 'baz'];
-      utils.uniq(iter).should.eql(['foo', 'bar', 'baz']);
+      uniq(iter).should.eql(['foo', 'bar', 'baz']);
     });
   });
 
   describe('toArr', () => {
     it('should return array', () => {
       const iter = ['foo', 'bar', 'baz'];
-      utils.toArr(iter).should.eql(['foo', 'bar', 'baz']);
+      toArr(iter).should.eql(['foo', 'bar', 'baz']);
     });
 
     it('should return empty array', () => {
       const iter = null;
-      utils.toArr(iter).should.eql([]);
+      toArr(iter).should.eql([]);
     });
   });
 
   describe('removeFrom', () => {
     it('should return same array', () => {
       const iter = ['foo', 'bar', 'baz'];
-      utils.removeFrom(iter).should.eql(['foo', 'bar', 'baz']);
+      removeFrom(iter).should.eql(['foo', 'bar', 'baz']);
     });
 
     it('should return cleaned array', () => {
       const iter = ['foo', 'bar', 'baz'];
-      utils.removeFrom(iter, ['baz', 'bar']).should.eql(['foo']);
+      removeFrom(iter, ['baz', 'bar']).should.eql(['foo']);
     });
   });
 
@@ -98,7 +108,7 @@ describe('utils index', () => {
       const obj = {
         preCompile: test => test
       };
-      utils.pifyHook(obj);
+      pifyHook(obj);
       obj.preCompile().should.be.an.instanceOf(Promise);
     });
 
@@ -106,7 +116,7 @@ describe('utils index', () => {
       const obj = {
         preCompile: () => 'test'
       };
-      utils.pifyHook(obj);
+      pifyHook(obj);
       obj.preCompile().should.not.be.an.instanceOf(Promise);
     });
   });
@@ -114,7 +124,7 @@ describe('utils index', () => {
   describe('jsonToData', () => {
     it('should decode data', () => {
       const json = {foo: 'bar'};
-      utils.jsonToData(json).should.eql('data:application/json;charset=utf-8;base64,eyJmb28iOiJiYXIifQ==');
+      jsonToData(json).should.eql('data:application/json;charset=utf-8;base64,eyJmb28iOiJiYXIifQ==');
     });
   });
 
