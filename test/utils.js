@@ -42,22 +42,15 @@ describe('utils index', () => {
   });
 
   describe('readonly', () => {
-    let target = {
-      'path': 'path/to/file.js'
-    };
-    const props = {'path': 'path/to/file.js'};
-    let descriptor;
-
-    beforeEach(() => {
+    it('should set enumerable and configurable to true', () => {
+      const target = {
+        'path': 'path/to/file.js'
+      };
+      const props = {'path': 'path/to/file.js'};
       utils.readonly(target, props);
-      descriptor = Object.getOwnPropertyDescriptor(target, 'path');
-    });
+      const descriptor = Object.getOwnPropertyDescriptor(target, 'path');
 
-    it('should set enumerable to true', () => {
       descriptor.enumerable.should.eql(true);
-    });
-
-    it('should set configurable to true', () => {
       descriptor.configurable.should.eql(true);
     });
   });
