@@ -66,40 +66,42 @@ describe('utils index', () => {
   });
 
   describe('flat', () => {
-    it('should flat array', () => {
-      const iter = ['foo', 'bar', 'baz'];
-      flat(iter).should.eql(['foo', 'bar', 'baz']);
+    it('should flat empty array', () => {
+      flat([]).should.eql([]);
+    });
+
+    it('should flat low level array', () => {
+      flat(['foo', 'bar', 'baz']).should.eql(['foo', 'bar', 'baz']);
+    });
+
+    it('should flat deep level array', () => {
+      flat([['foo', 'bar'], 'baz']).should.eql(['foo', 'bar', 'baz']);
     });
   });
 
   describe('uniq', () => {
     it('should have unique values', () => {
-      const iter = ['foo', 'foo', 'bar', 'baz', 'baz', 'baz'];
-      uniq(iter).should.eql(['foo', 'bar', 'baz']);
+      uniq(['foo', 'foo', 'bar', 'baz', 'baz', 'baz']).should.eql(['foo', 'bar', 'baz']);
     });
   });
 
   describe('toArr', () => {
     it('should return array', () => {
-      const iter = ['foo', 'bar', 'baz'];
-      toArr(iter).should.eql(['foo', 'bar', 'baz']);
+      toArr(['foo', 'bar', 'baz']).should.eql(['foo', 'bar', 'baz']);
     });
 
     it('should return empty array', () => {
-      const iter = null;
-      toArr(iter).should.eql([]);
+      toArr(null).should.eql([]);
     });
   });
 
   describe('removeFrom', () => {
     it('should return same array', () => {
-      const iter = ['foo', 'bar', 'baz'];
-      removeFrom(iter).should.eql(['foo', 'bar', 'baz']);
+      removeFrom(['foo', 'bar', 'baz']).should.eql(['foo', 'bar', 'baz']);
     });
 
     it('should return cleaned array', () => {
-      const iter = ['foo', 'bar', 'baz'];
-      removeFrom(iter, ['baz', 'bar']).should.eql(['foo']);
+      removeFrom(['foo', 'bar', 'baz'], ['baz', 'bar']).should.eql(['foo']);
     });
   });
 
@@ -123,8 +125,7 @@ describe('utils index', () => {
 
   describe('jsonToData', () => {
     it('should decode data', () => {
-      const json = {foo: 'bar'};
-      jsonToData(json).should.eql('data:application/json;charset=utf-8;base64,eyJmb28iOiJiYXIifQ==');
+      jsonToData({foo: 'bar'}).should.eql('data:application/json;charset=utf-8;base64,eyJmb28iOiJiYXIifQ==');
     });
   });
 
