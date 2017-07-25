@@ -36,7 +36,7 @@
   "scripts": {
     "lint": "eslint lib/config/index.js",
     "lint:fix": "eslint --fix bin/brunch lib test",
-    "test": "mocha -r test/__harness -w"
+    "test": "mocha test/**/*.js -r test/_harness -w"
   },
   "engines": {
     "node": ">= 6.10"
@@ -49,22 +49,23 @@
     "commander": "~2.9",
     "deps-install": "~0.1",
     "init-skeleton": "~1.0",
-    "joi": "^10.4",
+    "joi": "~10.5",
+    "loggy": "~1.0",
     "micro-es7-shim": "paulmillr/micro-es7-shim#new-version",
     "mkdirp": "~0.5",
     "pify": "^2.3",
     "quickly-copy-file": "^1.0",
     "serve-brunch": "~0.1",
     "source-map": "~0.5",
-    "universal-path": "^0.1"
+    "universal-path": "hellyeahllc/universal-path"
   },
   "devDependencies": {
-    "chai": "chaijs/chai",
+    "chai": "^4.0",
     "chai-as-promised": "^6.0",
     "chai-spies": "^0.7.1",
     "eslint": "^3.0",
     "eslint-config-brunch": "^1.0",
-    "mocha": "^3.3"
+    "mocha": "^3.4"
   },
   "optionalDependencies": {
     "coffee-script": "^1.12"
