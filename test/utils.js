@@ -2,6 +2,7 @@
 
 const pify = require('pify');
 const fs = pify(require('fs'));
+const chai = require('chai');
 const {
   parentDirs,
   writeFile,
@@ -11,7 +12,11 @@ const {
   toArr,
   removeFrom,
   pifyHook,
-  jsonToData
+  jsonToData,
+  debounce,
+  deepFreeze,
+  FrozenMap,
+  FrozenSet
 } = require('../lib/utils');
 
 describe('utils index', () => {
@@ -129,13 +134,63 @@ describe('utils index', () => {
     });
   });
 
+  describe('debounce', () => {
+    it('should debounce function for 1 sec', done => {
+      let testFn = () => {};
+      testFn = debounce(testFn, 100);
+      const spy = chai.spy(testFn);
+      spy();
+      setTimeout(() => {
+        spy.should.be.called();
+        done();
+      }, 100);
+    });
+  });
+
+  describe('deepFreeze', () => {
+    it('should deepFreeze object', () => {
+      const obj = {
+        foo: {
+          bar: 'baz'
+        }
+      };
+      const frozen = deepFreeze(obj);
+      Object.isFrozen(frozen).should.be.true;
+      Object.isFrozen(frozen.foo).should.be.true;
+      Object.isFrozen(frozen.bar).should.be.true;
+    });
+
+    it('should not freeze RegExp object', () => {
+      const obj = {
+        regexp: new RegExp()
+      };
+      const frozen = deepFreeze(obj);
+      Object.isFrozen(frozen.regexp).should.be.false;
+    });
+  });
+
+  describe('FrozenMap', () => {
+    it('should throw if set called', () => {
+      const map = new FrozenMap();
+
+      (() => {
+        map.set('foo');
+      }).should.throw('Can\'t set property \'foo\', map is not extensible');
+    });
+  });
+
+  describe('FrozenSet', () => {
+    it('should throw if add called', () => {
+      const set = new FrozenSet();
+
+      (() => {
+        set.add('foo');
+      }).should.throw('Can\'t add value \'foo\', set is not extensible');
+    });
+  });
+
   //todo
-  // - debounce
-  // - deepFreeze
-  // - isSymlink
   // - asyncFilter
   // - asyncReduce
-  // - FrozenMap
-  // - FrozenSet
   // - pull
 });

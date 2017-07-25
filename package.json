@@ -50,7 +50,6 @@
     "deps-install": "~0.1",
     "init-skeleton": "~1.0",
     "joi": "^10.4",
-    "loggy": "~1.0",
     "micro-es7-shim": "paulmillr/micro-es7-shim#new-version",
     "mkdirp": "~0.5",
     "pify": "^2.3",
@@ -62,6 +61,7 @@
   "devDependencies": {
     "chai": "chaijs/chai",
     "chai-as-promised": "^6.0",
+    "chai-spies": "^0.7.1",
     "eslint": "^3.0",
     "eslint-config-brunch": "^1.0",
     "mocha": "^3.3"
